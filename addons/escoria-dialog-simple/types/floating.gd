@@ -34,13 +34,13 @@ var _current_line: String
 
 
 # Tween node for text animation
-onready var tween: Tween = $Tween
+@onready var tween: ESCTween = $Tween
 
 # The node showing the text
-onready var text_node: RichTextLabel = self
+@onready var text_node: RichTextLabel = self
 
 # Whether the dialog manager is paused
-onready var is_paused: bool = true
+@onready var is_paused: bool = true
 
 var dialog_location_node = null
 
@@ -56,11 +56,11 @@ func _ready():
 			"%s setting must be a non-negative number. Will use default value of %s." %
 				[
 					SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS,
-					SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_DEFAULT_VALUE
+					100 # fixme: SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_DEFAULT_VALUE
 				]
 		)
 
-		_text_time_per_character = SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_DEFAULT_VALUE
+		_text_time_per_character = 100 # fixme: SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_DEFAULT_VALUE
 
 	_fast_text_time_per_character = ProjectSettings.get_setting(
 		SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST
@@ -72,11 +72,11 @@ func _ready():
 			"%s setting must be a non-negative number. Will use default value of %s." %
 				[
 					SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST,
-					SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST_DEFAULT_VALUE
+					25 # fixme: SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST_DEFAULT_VALUE
 				]
 		)
 
-		_fast_text_time_per_character = SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST_DEFAULT_VALUE
+		_fast_text_time_per_character = 25 # fixme: SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST_DEFAULT_VALUE
 
 	_reading_speed_in_wpm = ProjectSettings.get_setting(
 		SimpleDialogSettings.READING_SPEED_IN_WPM
@@ -88,21 +88,21 @@ func _ready():
 			"%s setting must be a positive number. Will use default value of %s." %
 				[
 					SimpleDialogSettings.READING_SPEED_IN_WPM,
-					SimpleDialogSettings.READING_SPEED_IN_WPM_DEFAULT_VALUE
+					200 # fixme: SimpleDialogSettings.READING_SPEED_IN_WPM_DEFAULT_VALUE
 				]
 		)
 
-		_reading_speed_in_wpm = SimpleDialogSettings.READING_SPEED_IN_WPM_DEFAULT_VALUE
+		_reading_speed_in_wpm = 200 # fixme: SimpleDialogSettings.READING_SPEED_IN_WPM_DEFAULT_VALUE
 
 	_word_regex.compile("\\S+")
 
 	bbcode_enabled = true
-	$Tween.connect("tween_completed", self, "_on_dialog_line_typed")
+	$Tween.connect("tween_completed", Callable(self, "_on_dialog_line_typed"))
 
-	connect("tree_exiting", self, "_on_tree_exiting")
+	connect("tree_exiting", Callable(self, "_on_tree_exiting"))
 
-	escoria.connect("paused", self, "_on_paused")
-	escoria.connect("resumed", self, "_on_resumed")
+	escoria.connect("paused", Callable(self, "_on_paused"))
+	escoria.connect("resumed", Callable(self, "_on_resumed"))
 
 	_current_line = ""
 
@@ -112,8 +112,8 @@ func _process(delta):
 	if _current_character.is_inside_tree() and \
 			is_instance_valid(dialog_location_node):
 		# Position the RichTextLabel on the character's dialog position, if any.
-		rect_position = dialog_location_node.get_global_transform_with_canvas().origin
-		rect_position.x -= rect_size.x / 2
+		position = dialog_location_node.get_global_transform_with_canvas().origin
+		position.x -= size.x / 2
 
 		_account_for_margin_x()
 
@@ -138,7 +138,7 @@ func say(character: String, line: String) :
 	var dialog_location_count:int = 0
 
 	for c in escoria.object_manager.get_object(character).node.get_children():
-		if c is Position2D:
+		if c is Marker2D:
 			# Identify any Postion2D nodes
 			if c.is_class("ESCDialogLocation"):
 				dialog_location_count += 1
@@ -155,17 +155,17 @@ func say(character: String, line: String) :
 	var text_color = _current_character.dialog_color
 	var text_color_html = text_color.to_html(false)
 
-	text_node.bbcode_text = "[center][color=#" + text_color_html + "]" \
+	text_node.text = "[center][color=#" + text_color_html + "]" \
 		.format([text_color_html]) + tr(line) + "[/color][center]"
 
 	if _current_character.is_inside_tree() and \
 			is_instance_valid(dialog_location_node):
-		rect_position = dialog_location_node.get_global_transform_with_canvas().origin
+		position = dialog_location_node.get_global_transform_with_canvas().origin
 
-		rect_position.x -= rect_size.x / 2
+		position.x -= size.x / 2
 	else:
-		rect_position.x = 0
-		rect_size.x = ProjectSettings.get_setting("display/window/size/width")
+		position.x = 0
+		size.x = ProjectSettings.get_setting("display/window/size/viewport_width")
 
 	_account_for_margin_x()
 
@@ -173,10 +173,10 @@ func say(character: String, line: String) :
 
 	_current_character.start_talking()
 
-	text_node.percent_visible = 0.0
+	text_node.visible_ratio = 0.0
 	var time_show_full_text = _text_time_per_character / 1000 * len(_current_line)
 
-	tween.interpolate_property(text_node, "percent_visible",
+	tween.interpolate_property(text_node, "visible_ratio",
 		0.0, 1.0, time_show_full_text,
 		Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	tween.start()
@@ -190,8 +190,8 @@ func speedup():
 		var time_show_full_text = _fast_text_time_per_character / 1000 * len(_current_line)
 
 		tween.remove_all()
-		tween.interpolate_property(text_node, "percent_visible",
-			text_node.percent_visible, 1.0, time_show_full_text,
+		tween.interpolate_property(text_node, "visible_ratio",
+			text_node.visible_ratio, 1.0, time_show_full_text,
 			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 		tween.start()
 
@@ -199,8 +199,8 @@ func speedup():
 # Called by the dialog player when user wants to finish dialogue immediately.
 func finish():
 	tween.remove_all()
-	tween.interpolate_property(text_node, "percent_visible",
-		text_node.percent_visible, 1.0, 0.0)
+	tween.interpolate_property(text_node, "visible_ratio",
+		text_node.visible_ratio, 1.0, 0.0)
 	tween.start()
 
 
@@ -217,7 +217,7 @@ func _on_dialog_line_typed(object, key):
 
 	var time_to_disappear: float = _calculate_time_to_disappear()
 	$Timer.start(time_to_disappear)
-	$Timer.connect("timeout", self, "_on_dialog_finished")
+	$Timer.connect("timeout", Callable(self, "_on_dialog_finished"))
 
 	emit_signal("say_visible")
 
@@ -263,22 +263,22 @@ func _stop_character_talking():
 
 
 func _account_for_margin_x() -> void:
-	if rect_position.x < 0:
-		rect_position.x = 0
+	if position.x < 0:
+		position.x = 0
 
-	var screen_margin_x = rect_position.x + rect_size.x - \
-			ProjectSettings.get("display/window/size/width")
+	var screen_margin_x = position.x + size.x - \
+			ProjectSettings.get("display/window/size/viewport_width")
 
 	if screen_margin_x > 0:
-		rect_position.x -= screen_margin_x
+		position.x -= screen_margin_x
 
 
 func _account_for_margin_y() -> void:
-	if rect_position.y < 0:
-		rect_position.y = 0
+	if position.y < 0:
+		position.y = 0
 
-	var screen_margin_y = rect_position.y + rect_size.y - \
-			ProjectSettings.get("display/window/size/height")
+	var screen_margin_y = position.y + size.y - \
+			ProjectSettings.get("display/window/size/viewport_height")
 
 	if screen_margin_y > 0:
-		rect_position.y -= screen_margin_y
+		position.y -= screen_margin_y

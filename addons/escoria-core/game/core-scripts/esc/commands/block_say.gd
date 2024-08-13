@@ -35,7 +35,7 @@ class_name BlockSayCommand
 
 # Constructor
 func _init() -> void:
-	pass
+	super._init()
 
 
 # Return the descriptor of the arguments of this command

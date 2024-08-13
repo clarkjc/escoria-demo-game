@@ -30,17 +30,17 @@ var _current_line: String
 
 
 # The node holding the avatar
-onready var avatar_node = $Panel/MarginContainer/HSplitContainer/VBoxContainer\
+@onready var avatar_node = $Panel/MarginContainer/HSplitContainer/VBoxContainer\
 		/avatar
 
 # The node showing the text
-onready var text_node = $Panel/MarginContainer/HSplitContainer/text
+@onready var text_node = $Panel/MarginContainer/HSplitContainer/text
 
 # The tween node for text animations
-onready var tween = $Panel/MarginContainer/HSplitContainer/text/Tween
+@onready var tween = $Panel/MarginContainer/HSplitContainer/text/Tween
 
 # Whether the dialog manager is paused
-onready var is_paused: bool = true
+@onready var is_paused: bool = true
 
 
 
@@ -56,11 +56,11 @@ func _ready():
 			"%s setting must be a non-negative number. Will use default value of %s." %
 				[
 					SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS,
-					SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_DEFAULT_VALUE
+					100 # fixme: SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_DEFAULT_VALUE
 				]
 		)
 
-		_text_time_per_character = SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_DEFAULT_VALUE
+		_text_time_per_character = 100 # fixme: SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_DEFAULT_VALUE
 
 	_fast_text_time_per_character = ProjectSettings.get_setting(
 		SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST
@@ -72,11 +72,11 @@ func _ready():
 			"%s setting must be a non-negative number. Will use default value of %s." %
 				[
 					SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST,
-					SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST_DEFAULT_VALUE
+					25 # fixme: SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST_DEFAULT_VALUE
 				]
 		)
 
-		_fast_text_time_per_character = SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST_DEFAULT_VALUE
+		_fast_text_time_per_character = 25 # fixme: SimpleDialogSettings.TEXT_TIME_PER_LETTER_MS_FAST_DEFAULT_VALUE
 
 	_reading_speed_in_wpm = ProjectSettings.get_setting(
 		SimpleDialogSettings.READING_SPEED_IN_WPM
@@ -88,25 +88,24 @@ func _ready():
 			"%s setting must be a positive number. Will use default value of %s." %
 				[
 					SimpleDialogSettings.READING_SPEED_IN_WPM,
-					SimpleDialogSettings.READING_SPEED_IN_WPM_DEFAULT_VALUE
+					200 # fixme: SimpleDialogSettings.READING_SPEED_IN_WPM_DEFAULT_VALUE
 				]
 		)
 
-		_reading_speed_in_wpm = SimpleDialogSettings.READING_SPEED_IN_WPM_DEFAULT_VALUE
+		_reading_speed_in_wpm = 200 # fixme: SimpleDialogSettings.READING_SPEED_IN_WPM_DEFAULT_VALUE
 
 	_word_regex.compile("\\S+")
 
 	text_node.bbcode_enabled = true
 	tween.connect(
 		"tween_completed",
-		self,
-		"_on_dialog_line_typed"
+		self._on_dialog_line_typed
 	)
 
-	escoria.connect("paused", self, "_on_paused")
-	escoria.connect("resumed", self, "_on_resumed")
+	escoria.connect("paused", Callable(self, "_on_paused"))
+	escoria.connect("resumed", Callable(self, "_on_resumed"))
 
-	connect("tree_exited", self, "_on_tree_exited")
+	connect("tree_exited", Callable(self, "_on_tree_exited"))
 
 
 # Switch the current character
@@ -114,7 +113,7 @@ func _ready():
 # #### Parameters
 # - name: The name of the current character
 func set_current_character(name: String):
-	if ProjectSettings.get_setting("escoria/dialog_simple/avatars_path").empty():
+	if ProjectSettings.get_setting("escoria/dialog_simple/avatars_path").is_empty():
 		escoria.logger.warn(self, "Unable to load avatar '%s': Avatar path not specified" % name)
 		return
 
@@ -145,12 +144,12 @@ func say(character: String, line: String):
 	popup_centered()
 	set_current_character(character)
 
-	text_node.bbcode_text = tr(line)
+	text_node.text = tr(line)
 
-	text_node.percent_visible = 0.0
+	text_node.visible_ratio = 0.0
 	var time_show_full_text = _text_time_per_character / 1000 * len(line)
 
-	tween.interpolate_property(text_node, "percent_visible",
+	tween.interpolate_property(text_node, "visible_ratio",
 		0.0, 1.0, time_show_full_text,
 		Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	tween.start()
@@ -162,8 +161,8 @@ func speedup():
 		_is_speeding_up = true
 		var time_show_full_text = _fast_text_time_per_character / 1000 * len(_current_line)
 		tween.remove_all()
-		tween.interpolate_property(text_node, "percent_visible",
-			text_node.percent_visible, 1.0, time_show_full_text,
+		tween.interpolate_property(text_node, "visible_ratio",
+			text_node.visible_ratio, 1.0, time_show_full_text,
 			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 		tween.start()
 
@@ -171,8 +170,8 @@ func speedup():
 # Called by the dialog player when user wants to finish dialogue immediately.
 func finish():
 	tween.remove_all()
-	tween.interpolate_property(text_node, "percent_visible",
-		text_node.percent_visible, 1.0, 0.0)
+	tween.interpolate_property(text_node, "visible_ratio",
+		text_node.visible_ratio, 1.0, 0.0)
 	tween.start()
 
 
@@ -194,8 +193,8 @@ func _on_dialog_line_typed(object, key):
 
 	var time_to_disappear: float = _calculate_time_to_disappear()
 
-	if not $Timer.is_connected("timeout", self, "_on_dialog_finished"):
-		$Timer.connect("timeout", self, "_on_dialog_finished")
+	if not $Timer.is_connected("timeout", Callable(self, "_on_dialog_finished")):
+		$Timer.connect("timeout", Callable(self, "_on_dialog_finished"))
 
 	$Timer.start(time_to_disappear)
 

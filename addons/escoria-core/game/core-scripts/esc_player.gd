@@ -1,13 +1,14 @@
+@tool
 # A playable character
-tool
+@icon("res://addons/escoria-core/design/esc_player.svg")
+class_name ESCPlayer
 extends ESCItem
-class_name ESCPlayer, "res://addons/escoria-core/design/esc_player.svg"
 
 
 
 
 # Whether the player can be selected like an item
-export(bool) var selectable = false
+@export var selectable: bool = false
 
 
 # A player is always movable
@@ -18,7 +19,8 @@ func _init():
 
 # Ready function
 func _ready():
+	super._ready()
 	if selectable:
-		._ready()
+		super._ready()
 	else:
 		tooltip_name = ""

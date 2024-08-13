@@ -9,66 +9,66 @@ const _ESCORIA_SETTINGS_ROOT = "escoria"
 # UI-related Escoria project settings
 const _UI_ROOT = "ui"
 
-const DEFAULT_DIALOG_TYPE = "%s/%s/default_dialog_type" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
-const DEFAULT_TRANSITION = "%s/%s/default_transition" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
-const DIALOG_MANAGERS = "%s/%s/dialog_managers" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
-const GAME_SCENE = "%s/%s/game_scene" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
-const INVENTORY_ITEM_SIZE = "%s/%s/inventory_item_size" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
-const INVENTORY_ITEMS_PATH = "%s/%s/inventory_items_path" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
-const TRANSITION_PATHS = "%s/%s/transition_paths" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
+static var DEFAULT_DIALOG_TYPE = "%s/%s/default_dialog_type" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
+static var DEFAULT_TRANSITION = "%s/%s/default_transition" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
+static var DIALOG_MANAGERS = "%s/%s/dialog_managers" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
+static var GAME_SCENE = "%s/%s/game_scene" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
+static var INVENTORY_ITEM_SIZE = "%s/%s/inventory_item_size" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
+static var INVENTORY_ITEMS_PATH = "%s/%s/inventory_items_path" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
+static var TRANSITION_PATHS = "%s/%s/transition_paths" % [_ESCORIA_SETTINGS_ROOT, _UI_ROOT]
 
 
 # Main Escoria project settings
 const _MAIN_ROOT = "main"
 
-const COMMAND_DIRECTORIES = "%s/%s/command_directories" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
-const FORCE_QUIT = "%s/%s/force_quit" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
-const GAME_MIGRATION_PATH = "%s/%s/game_migration_path" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
-const GAME_VERSION = "%s/%s/game_version" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
-const GAME_START_SCRIPT = "%s/%s/game_start_script" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
-const ACTION_DEFAULT_SCRIPT = "%s/%s/action_default_script" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
-const SAVEGAMES_PATH = "%s/%s/savegames_path" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
-const SETTINGS_PATH = "%s/%s/settings_path" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
-const TEXT_LANG = "%s/%s/text_lang" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
-const VOICE_LANG = "%s/%s/voice_lang" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
+static var COMMAND_DIRECTORIES = "%s/%s/command_directories" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
+static var FORCE_QUIT = "%s/%s/force_quit" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
+static var GAME_MIGRATION_PATH = "%s/%s/game_migration_path" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
+static var GAME_VERSION = "%s/%s/game_version" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
+static var GAME_START_SCRIPT = "%s/%s/game_start_script" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
+static var ACTION_DEFAULT_SCRIPT = "%s/%s/action_default_script" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
+static var SAVEGAMES_PATH = "%s/%s/savegames_path" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
+static var SETTINGS_PATH = "%s/%s/settings_path" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
+static var TEXT_LANG = "%s/%s/text_lang" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
+static var VOICE_LANG = "%s/%s/voice_lang" % [_ESCORIA_SETTINGS_ROOT, _MAIN_ROOT]
 
 # Debug-related Escoria project settings
 const _DEBUG_ROOT = "debug"
 
-const CRASH_MESSAGE = "%s/%s/crash_message" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
-const DEVELOPMENT_LANG = "%s/%s/development_lang" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
+static var CRASH_MESSAGE = "%s/%s/crash_message" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
+static var DEVELOPMENT_LANG = "%s/%s/development_lang" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
 # If enabled, displays the room selection box for quick room change
-const ENABLE_ROOM_SELECTOR = "%s/%s/enable_room_selector" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
-const LOG_FILE_PATH = "%s/%s/log_file_path" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
-const LOG_LEVEL = "%s/%s/log_level" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
-const ROOM_SELECTOR_ROOM_DIR = "%s/%s/room_selector_room_dir" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
-const TERMINATE_ON_ERRORS = "%s/%s/terminate_on_errors" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
-const TERMINATE_ON_WARNINGS = "%s/%s/terminate_on_warnings" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
+static var ENABLE_ROOM_SELECTOR = "%s/%s/enable_room_selector" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
+static var LOG_FILE_PATH = "%s/%s/log_file_path" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
+static var LOG_LEVEL = "%s/%s/log_level" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
+static var ROOM_SELECTOR_ROOM_DIR = "%s/%s/room_selector_room_dir" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
+static var TERMINATE_ON_ERRORS = "%s/%s/terminate_on_errors" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
+static var TERMINATE_ON_WARNINGS = "%s/%s/terminate_on_warnings" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
 # If enabled, displays the hover stack on screen
-const ENABLE_HOVER_STACK_VIEWER = "%s/%s/enable_hover_stack_viewer" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
+static var ENABLE_HOVER_STACK_VIEWER = "%s/%s/enable_hover_stack_viewer" % [_ESCORIA_SETTINGS_ROOT, _DEBUG_ROOT]
 
 # Sound-related Escoria project settings
 const _SOUND_ROOT = "sound"
 
-const MASTER_VOLUME = "%s/%s/master_volume" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
-const MUSIC_VOLUME = "%s/%s/music_volume" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
-const SFX_VOLUME = "%s/%s/sfx_volume" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
-const SPEECH_ENABLED = "%s/%s/speech_enabled" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
-const SPEECH_EXTENSION = "%s/%s/speech_extension" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
-const SPEECH_FOLDER = "%s/%s/speech_folder" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
-const SPEECH_VOLUME = "%s/%s/speech_volume" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
+static var MASTER_VOLUME = "%s/%s/master_volume" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
+static var MUSIC_VOLUME = "%s/%s/music_volume" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
+static var SFX_VOLUME = "%s/%s/sfx_volume" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
+static var SPEECH_ENABLED = "%s/%s/speech_enabled" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
+static var SPEECH_EXTENSION = "%s/%s/speech_extension" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
+static var SPEECH_FOLDER = "%s/%s/speech_folder" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
+static var SPEECH_VOLUME = "%s/%s/speech_volume" % [_ESCORIA_SETTINGS_ROOT, _SOUND_ROOT]
 
 # Platform-related Escoria project settings
 const _PLATFORM_ROOT = "platform"
 
-const SKIP_CACHE = "%s/%s/skip_cache" % [_ESCORIA_SETTINGS_ROOT, _PLATFORM_ROOT]
-const SKIP_CACHE_MOBILE = "%s/%s/skip_cache.mobile" % [_ESCORIA_SETTINGS_ROOT, _PLATFORM_ROOT]
+static var SKIP_CACHE = "%s/%s/skip_cache" % [_ESCORIA_SETTINGS_ROOT, _PLATFORM_ROOT]
+static var SKIP_CACHE_MOBILE = "%s/%s/skip_cache.mobile" % [_ESCORIA_SETTINGS_ROOT, _PLATFORM_ROOT]
 
 # Godot Windows project settings
 const DISPLAY = "display"
 const WINDOW = "window"
 const SIZE = "size"
-const FULLSCREEN = "%s/%s/%s/fullscreen" % [DISPLAY, WINDOW, SIZE]
+static var FULLSCREEN = "%s/%s/%s/mode" % [DISPLAY, WINDOW, SIZE]
 
 
 # Register a new project setting if it hasn't been defined already

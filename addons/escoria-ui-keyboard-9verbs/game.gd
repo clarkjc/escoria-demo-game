@@ -50,17 +50,18 @@ Implement methods to react to inputs.
 """
 
 
-onready var verbs_menu = $ui/Control/panel_down/VBoxContainer/HBoxContainer\
+@onready var verbs_menu = $ui/Control/panel_down/VBoxContainer/HBoxContainer\
 		/VerbsMargin/verbs_menu
-onready var tooltip = $ui/Control/panel_down/VBoxContainer/MarginContainer\
+@onready var tooltip = $ui/Control/panel_down/VBoxContainer/MarginContainer\
 		/tooltip
-onready var room_select = $ui/Control/panel_down/VBoxContainer/HBoxContainer\
+@onready var room_select = $ui/Control/panel_down/VBoxContainer/HBoxContainer\
 		/MainMargin/VBoxContainer/room_select
-onready var inventory_ui = $ui/Control/panel_down/VBoxContainer/HBoxContainer\
+@onready var inventory_ui = $ui/Control/panel_down/VBoxContainer/HBoxContainer\
 		/InventoryMargin/inventory_ui
 const input_map = preload("res://addons/escoria-ui-keyboard-9verbs/input_map.gd")
 
 func _enter_tree():
+	super._enter_tree()
 	var room_selector_parent = $ui/Control/panel_down/VBoxContainer\
 			/HBoxContainer/MainMargin/VBoxContainer
 
@@ -70,15 +71,16 @@ func _enter_tree():
 			preload(
 				"res://addons/escoria-core/ui_library/tools/room_select" +\
 				"/room_select.tscn"
-			).instance()
+			).instantiate()
 		)
 
-	var input_handler = funcref(self, "_process_input")
+	var input_handler = self._process_input
 	escoria.inputs_manager.register_custom_input_handler(input_handler)
 	input_map.add_actions_to_input_map()
 
 
 func _exit_tree():
+	super._exit_tree()
 	escoria.inputs_manager.register_custom_input_handler(null)
 	input_map.erase_actions_from_input_map()
 
@@ -395,10 +397,12 @@ func _on_MenuButton_pressed() -> void:
 
 
 func _on_action_finished() -> void:
+	super._on_action_finished()
 	verbs_menu.unselect_actions()
 	tooltip.clear()
 
 func _on_event_done(_return_code: int, _event_name: String):
+	super._on_event_done(_return_code, _event_name)
 	if _return_code == ESCExecution.RC_OK:
 		escoria.action_manager.clear_current_action()
 		verbs_menu.unselect_actions()

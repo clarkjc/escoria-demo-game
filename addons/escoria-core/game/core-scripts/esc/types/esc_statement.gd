@@ -1,5 +1,5 @@
 # A statement in an ESC file
-extends Reference
+extends RefCounted
 class_name ESCStatement
 
 
@@ -43,15 +43,15 @@ func run() -> int:
 			return final_rc
 
 		if statement.is_valid():
-			var rc = statement.run()
-			if rc is GDScriptFunctionState:
-				rc = yield(rc, "completed")
+			var rc = await statement.run()
+			if true: #rc is GDScriptFunctionState:
+				#rc = await rc.completed
 				escoria.logger.debug(
 					self,
 					"Statement (%s) was completed." % statement
 				)
 			if rc == ESCExecution.RC_REPEAT:
-				return self.run()
+				return await self.run()
 			elif rc != ESCExecution.RC_OK:
 				final_rc = rc
 				break

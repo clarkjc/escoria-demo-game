@@ -10,15 +10,16 @@
 #
 # The game character will automatically walk to an ``ESCLocation`` created as a
 # child of an ``ESCExit`` node.
+@icon("res://addons/escoria-core/design/esc_exit.svg")
+class_name ESCExit
 extends ESCItem
-class_name ESCExit, "res://addons/escoria-core/design/esc_exit.svg"
 
 
 # Path to the target scene to change to
-export(String, FILE, "*.tscn") var target_scene = ""
+@export var target_scene = "" # (String, FILE, "*.tscn")
 
 # Sound effect to play when changing the scene
-export(String, FILE, "*.ogg,*.mp3,*.wav") var switch_sound = ""
+@export var switch_sound = "" # (String, FILE, "*.ogg,*.mp3,*.wav")
 
 # ESC commands kept around for references to their command names.
 var _play_snd: PlaySndCommand
@@ -31,6 +32,7 @@ func _enter_tree():
 
 
 func _ready():
+	super._ready()
 	_play_snd = PlaySndCommand.new()
 	_change_scene = ChangeSceneCommand.new()
 

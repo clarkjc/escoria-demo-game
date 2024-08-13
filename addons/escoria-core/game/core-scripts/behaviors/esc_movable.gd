@@ -15,14 +15,8 @@ enum MovableTask {
 }
 
 
-# Character path through the scene as calculated by the Pathfinder
-var walk_path: Array = []
-
-# Current active walk path entry
-var path_ofs: int
-
-# The destination where the character should be moving to
-var walk_destination: Vector2
+# Navigation agent
+var navigation_agent: NavigationAgent2D
 
 # The walk context currently carried out by this movable node
 var walk_context: ESCWalkContext = null
@@ -47,16 +41,18 @@ var _orig_speed: float = 0.0
 
 
 # Shortcut variable that references the node's parent
-onready var parent = get_parent()
+@onready var parent = get_parent()
 
 
 # Currenly running task
-onready var task = MovableTask.NONE
+@onready var task = MovableTask.NONE
 
 
 # Add the signal "arrived" to the parent node, which is emitted when
 # the destination position was reached
 func _ready() -> void:
+	navigation_agent = NavigationAgent2D.new()
+	parent.add_child(navigation_agent)
 	if not parent.has_user_signal("arrived"):
 		parent.add_user_signal("arrived")
 
@@ -66,7 +62,7 @@ func _ready() -> void:
 # #### Parameters
 #
 # - delta: Time that has passed since the last call to this function
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 
@@ -84,7 +80,7 @@ func _process(delta: float) -> void:
 		update_terrain()
 	else:
 		moved = false
-		set_process(false)
+		set_physics_process(false)
 
 
 # Calculates the next position of the object.
@@ -100,12 +96,13 @@ func _calculate_movement(delta: float):
 	var pos: Vector2 = parent.get_position()
 	var old_pos: Vector2 = pos
 
-	# Get next waypoint from the walkpath array.
-	var next: Vector2
-	if walk_path.size() > 1:
-		next = walk_path[path_ofs + 1]
-	else:
-		next = walk_path[path_ofs]
+	# Check if navigation is finished
+	if navigation_agent.is_navigation_finished():
+		walk_stop(pos)
+		return
+
+	# Get next waypoint from the navigation agent.
+	var next: Vector2 = navigation_agent.get_next_path_position()
 
 	# Movement speed calculation
 	var a: float = pow(sin(last_angle), 2)
@@ -117,22 +114,8 @@ func _calculate_movement(delta: float):
 	# Calculate the direction vector from current position and next waypoint
 	var dir: Vector2 = (next - pos).normalized()
 
-	# If we're close to the next waypoint (ie. distance < necessary movement
-	# speed to get to this waypoint, we consider the waypoint reached
-	# and pass to the next one.
-	# Else, calculate the new position.
-	var new_pos: Vector2
-	if pos.distance_to(next) < movement_speed:
-		new_pos = next
-		path_ofs += 1
-	else:
-		new_pos = pos + dir * movement_speed * parent.v_speed_damp
-
-	# If current waypoint id is >= the number of waypoints, were're at the
-	# end of the walk: stop walking.
-	if path_ofs >= walk_path.size() - 1:
-		walk_stop(walk_destination)
-		return
+	# Calculate the new position.
+	var new_pos: Vector2 = pos + dir * movement_speed * parent.v_speed_damp
 
 	# Update current position variable
 	pos = new_pos
@@ -235,18 +218,13 @@ func walk_to(pos: Vector2, p_walk_context: ESCWalkContext = null) -> void:
 	if task == MovableTask.NONE:
 		task = MovableTask.WALK
 
-	walk_path = parent.terrain.get_simple_path(parent.get_position(), pos, true)
+	navigation_agent.target_position = pos
 
-	if walk_path.size() == 0:
-		task = MovableTask.NONE
-		walk_stop(parent.get_position())
-		set_process(false)
-		return
 	moved = true
-	walk_destination = walk_path[walk_path.size()-1]
-	path_ofs = 0
+	#walk_destination = walk_path[walk_path.size()-1]
+	#path_ofs = 0
 	task = MovableTask.WALK
-	set_process(true)
+	set_physics_process(true)
 
 
 # We have finished walking. Set the idle pose and complete
@@ -257,7 +235,6 @@ func walk_to(pos: Vector2, p_walk_context: ESCWalkContext = null) -> void:
 func walk_stop(pos: Vector2) -> void:
 	parent.global_position = pos
 #	parent.interact_status = parent.INTERACT_STATES.INTERACT_NONE
-	walk_path = []
 
 	if _orig_speed > 0:
 		parent.speed = _orig_speed
@@ -265,7 +242,7 @@ func walk_stop(pos: Vector2) -> void:
 
 	task = MovableTask.NONE
 	moved = false
-	set_process(false)
+	set_physics_process(false)
 
 	# If we're heading to an object and reached its interaction position,
 	# orient towards the defined interaction direction set on the object
@@ -336,10 +313,10 @@ func update_terrain(on_event_finished_name = null) -> void:
 		return
 
 	var pos = parent.global_position
-	if pos.y <= VisualServer.CANVAS_ITEM_Z_MAX:
+	if pos.y <= RenderingServer.CANVAS_ITEM_Z_MAX:
 		parent.z_index = pos.y
 	else:
-		parent.z_index = VisualServer.CANVAS_ITEM_Z_MAX
+		parent.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
 
 	var factor = parent.terrain.get_terrain(pos)
 	var scal = parent.terrain.get_scale_range(factor)
@@ -452,7 +429,7 @@ func set_angle(deg: int, wait: float = 0.0) -> void:
 			parent.animations.idles[dir].animation
 		)
 		if wait > 0.0:
-			yield(get_tree().create_timer(wait), "timeout")
+			await get_tree().create_timer(wait).timeout
 		is_mirrored = parent.animations.idles[dir].mirrored
 
 	last_dir = _get_dir_deg(deg, parent.animations)
@@ -476,7 +453,7 @@ func set_angle(deg: int, wait: float = 0.0) -> void:
 func turn_to(item: Node, wait: float = 0.0) -> void:
 	set_angle(
 		wrapi(
-			rad2deg(parent.get_position().angle_to_point(item.get_position())),
+			rad_to_deg(parent.get_position().angle_to_point(item.get_position())),
 			0,
 			360
 		),

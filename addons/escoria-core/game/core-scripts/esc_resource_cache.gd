@@ -16,22 +16,21 @@ func queue_resource(path: String, p_in_front: bool = false, p_permanent: bool = 
 	if path in pending:
 		return
 
-	elif ResourceLoader.has(path):
+	elif ResourceLoader.has_cached(path):
 		var res = ResourceLoader.load(path)
 		pending[path] = ESCResourceDescriptor.new(res, p_permanent)
 	else:
-		var res = ResourceLoader.load_interactive(path)
-		res.set_meta("path", path)
+		var err = ResourceLoader.load_threaded_request(path)
 		if p_in_front:
-			queue.insert(0, res)
+			queue.insert(0, path)
 		else:
-			queue.push_back(res)
-		pending[path] = ESCResourceDescriptor.new(res, p_permanent)
+			queue.push_back(path)
+		pending[path] = ESCResourceDescriptor.new(null, p_permanent)
 
 
 func cancel_resource(path):
 	if path in pending:
-		if pending[path].res is ResourceInteractiveLoader:
+		if pending[path].res is Resource:
 			queue.erase(pending[path].res)
 		pending.erase(path)
 
@@ -48,8 +47,10 @@ func clear():
 func get_progress(path):
 	var ret = -1
 	if path in pending:
-		if pending[path].res is ResourceInteractiveLoader:
-			ret = float(pending[path].res.get_stage()) / float(pending[path].res.get_stage_count())
+		if !(pending[path].res is Resource):
+			var progress = [0.0]
+			var status = ResourceLoader.load_threaded_get_status(path, progress)
+			ret = progress[0]
 		else:
 			ret = 1.0
 			emit_signal("resource_loading_done", path)
@@ -62,33 +63,32 @@ func is_ready(path):
 	var ret
 
 	if path in pending:
-		ret = !(pending[path].res is ResourceInteractiveLoader)
+		ret = pending[path].res is Resource
 	else:
 		ret = false
 
 	return ret
 
 
-func _wait_for_resource(res, path):
+func _wait_for_resource(path):
 	while true:
 		#VisualServer.call("sync") # workaround because sync is a keyword
-		VisualServer.force_sync()
+		RenderingServer.force_sync()
 		OS.delay_usec(16000) # wait 1 frame
 
-		if queue.size() == 0 || queue[0] != res:
+		if queue.size() == 0 || queue[0] != path:
 			return pending[path].res
 
 
 func get_resource(path):
 	if path in pending:
-		if pending[path].res is ResourceInteractiveLoader:
-			var res = pending[path].res
-			if res != queue[0]:
-				var pos = queue.find(res)
-				queue.remove(pos)
-				queue.insert(0, res)
+		if !(pending[path].res is Resource):
+			if path != queue[0]:
+				var pos = queue.find(path)
+				queue.remove_at(pos)
+				queue.insert(0, path)
 
-			res = _wait_for_resource(res, path)
+			var res = _wait_for_resource(path)
 
 			if !pending[path].permanent:
 				pending.erase(path)
@@ -133,15 +133,14 @@ func start():
 
 func _process(_delta) -> void:
 	while queue.size() > 0:
-		var res = queue[0]
+		var path = queue[0]
 
-		var ret = res.poll()
+		var ret = ResourceLoader.load_threaded_get_status(path)
 
-		var path = res.get_meta("path")
-		if ret == ERR_FILE_EOF || ret != OK:
+		if ret != ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 			printt("finished loading ", path)
 			if path in pending: # else it was already retrieved
-				pending[res.get_meta("path")].res = res.get_resource()
+				pending[path].res = ResourceLoader.load_threaded_get(path)
 
-			queue.erase(res) # something might have been put at the front of the queue while we polled, so use erase instead of remove
+			queue.erase(path) # something might have been put at the front of the queue while we polled, so use erase instead of remove
 			emit_signal("resource_queue_progress", queue.size())

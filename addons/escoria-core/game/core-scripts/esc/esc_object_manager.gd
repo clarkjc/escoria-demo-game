@@ -97,7 +97,7 @@ func set_current_room(room: ESCRoom) -> void:
 func register_object(object: ESCObject, room: ESCRoom = null, force: bool = false, \
 	auto_unregister: bool = true) -> void:
 
-	if object.global_id.empty():
+	if object.global_id.is_empty():
 		object.global_id = str(object.node.get_path()).split("/root/", false)[0]
 		object.node.global_id = object.global_id
 		escoria.logger.warn(
@@ -118,10 +118,10 @@ func register_object(object: ESCObject, room: ESCRoom = null, force: bool = fals
 
 	# If a room was passed in, then we're going to register the object with it;
 	# otherwise, we register the object with the "current room".
-	if room == null or room.global_id.empty():
+	if room == null or room.global_id.is_empty():
 		# We duplicate the key so as to not hold a reference when current_room_key
 		# changes.
-		if current_room_key.room_global_id.empty():
+		if current_room_key.room_global_id.is_empty():
 			escoria.logger.error(
 				self,
 				"The current room has no Global ID.\n" +
@@ -166,13 +166,11 @@ func register_object(object: ESCObject, room: ESCRoom = null, force: bool = fals
 	# auto-unregister or not. In most cases, objects are set to auto unregister.
 	if object.node.is_connected(
 		"tree_exited",
-		self,
-		"unregister_object"
+		self.unregister_object
 	):
 		object.node.disconnect(
 			"tree_exited",
-			self,
-			"unregister_object"
+			self.unregister_object
 		)
 
 	if force:
@@ -183,15 +181,13 @@ func register_object(object: ESCObject, room: ESCRoom = null, force: bool = fals
 	if auto_unregister:
 		object.node.connect(
 			"tree_exited",
-			self,
-			"unregister_object",
-			[object, room_key]
+			self.unregister_object.bind(object, room_key)
 		)
 
 	if "is_interactive" in object.node and object.node.is_interactive:
 		object.interactive = true
 
-	if "esc_script" in object.node and not object.node.esc_script.empty():
+	if "esc_script" in object.node and not object.node.esc_script.is_empty():
 		var script = escoria.esc_compiler.load_esc_file(
 			object.node.esc_script
 		)
@@ -409,7 +405,7 @@ func get_start_location() -> ESCLocation:
 			if is_instance_valid(object.node) \
 					and object.node is ESCLocation \
 					and object.node.is_start_location:
-				return object
+				return object as ESCLocation
 
 	escoria.logger.warn(
 		self,

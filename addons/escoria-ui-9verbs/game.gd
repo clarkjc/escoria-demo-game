@@ -41,15 +41,16 @@ Implement methods to react to inputs.
 - _on_event_done(event_name: String)
 """
 
-onready var verbs_menu = $ui/Control/panel_down/VBoxContainer/HBoxContainer\
+@onready var verbs_menu = $ui/Control/panel_down/VBoxContainer/HBoxContainer\
 		/VerbsMargin/verbs_menu
-onready var tooltip = $ui/Control/panel_down/VBoxContainer/MarginContainer\
+@onready var tooltip = $ui/Control/panel_down/VBoxContainer/MarginContainer\
 		/tooltip
-onready var inventory_ui = $ui/Control/panel_down/VBoxContainer/HBoxContainer\
+@onready var inventory_ui = $ui/Control/panel_down/VBoxContainer/HBoxContainer\
 		/InventoryMargin/inventory_ui
 var room_select
 
 func _enter_tree():
+	super._enter_tree()
 	var room_selector_parent = $ui/Control/panel_down/VBoxContainer\
 			/HBoxContainer/MainMargin/VBoxContainer
 
@@ -58,7 +59,7 @@ func _enter_tree():
 		room_select = preload(
 			"res://addons/escoria-core/ui_library/tools/room_select" +\
 			"/room_select.tscn"
-		).instance()
+		).instantiate()
 		room_selector_parent.add_child(room_select)
 
 
@@ -355,10 +356,12 @@ func _on_MenuButton_pressed() -> void:
 
 
 func _on_action_finished() -> void:
+	super._on_action_finished()
 	verbs_menu.unselect_actions()
 
 
 func _on_event_done(_return_code: int, _event_name: String):
+	super._on_event_done(_return_code, _event_name)
 	if _return_code == ESCExecution.RC_OK:
 		escoria.action_manager.clear_current_action()
 		verbs_menu.unselect_actions()
