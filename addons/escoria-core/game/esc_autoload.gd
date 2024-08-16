@@ -162,4 +162,3 @@ func new_game():
 func quit():
 	is_quitting = true
 	get_escoria().quit()
-

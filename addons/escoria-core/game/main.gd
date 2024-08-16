@@ -260,4 +260,3 @@ func _disable_collisions() -> void:
 		if item is Area2D:
 			item.monitoring = false
 			item.monitorable = false
-
