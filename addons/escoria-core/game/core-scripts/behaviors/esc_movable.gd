@@ -74,7 +74,7 @@ func _physics_process(delta: float) -> void:
 
 		if task == MovableTask.WALK:
 			# Get the angle of the object to face the position to reach.
-			var angle: float = (old_pos.angle_to_point(new_pos))
+			var angle: float = (new_pos.angle_to_point(old_pos))
 			_perform_walk_orientation(angle)
 
 		update_terrain()
