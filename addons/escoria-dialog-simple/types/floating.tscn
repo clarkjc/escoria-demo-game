@@ -9,9 +9,6 @@ offset_bottom = 60.0
 bbcode_enabled = true
 text = "Here be some text."
 script = ExtResource("1")
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Tween" type="Node" parent="."]
 script = ExtResource("2_pp1t5")

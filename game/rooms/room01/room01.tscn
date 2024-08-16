@@ -80,7 +80,6 @@ is_exit = true
 tooltip_name = "Exit to room 2"
 default_action = "walk"
 combine_when_selected_action_is_in = PackedStringArray()
-animations = null
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hotspots/r_door"]
 polygon = PackedVector2Array(1173, 63, 1278, 106, 1278, 420, 1172, 356)
@@ -98,7 +97,6 @@ tooltip_name = "Artwork"
 default_action = "look"
 combine_when_selected_action_is_in = PackedStringArray()
 inventory_texture = ExtResource("10")
-animations = null
 
 [node name="Art1" type="Sprite2D" parent="Hotspots/artwork1"]
 position = Vector2(470, 140)
@@ -131,7 +129,6 @@ tooltip_name = "Artwork 2"
 default_action = "look"
 combine_when_selected_action_is_in = PackedStringArray()
 inventory_texture = ExtResource("9")
-animations = null
 
 [node name="Art12" type="Sprite2D" parent="Hotspots/artwork2"]
 position = Vector2(830, 140)
@@ -163,7 +160,6 @@ esc_script = "res://game/rooms/room01/esc/trigger.esc"
 is_trigger = true
 player_orients_on_arrival = false
 combine_when_selected_action_is_in = PackedStringArray()
-animations = null
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hotspots/trigger_talk"]
 polygon = PackedVector2Array(1027, 352, 1187, 502, 1249.67, 445.131, 1123, 351)

@@ -98,7 +98,7 @@ func _calculate_movement(delta: float):
 
 	# Check if navigation is finished
 	if navigation_agent.is_navigation_finished():
-		walk_stop(pos)
+		walk_stop(navigation_agent.target_position)
 		return
 
 	# Get next waypoint from the navigation agent.
@@ -221,8 +221,6 @@ func walk_to(pos: Vector2, p_walk_context: ESCWalkContext = null) -> void:
 	navigation_agent.target_position = pos
 
 	moved = true
-	#walk_destination = walk_path[walk_path.size()-1]
-	#path_ofs = 0
 	task = MovableTask.WALK
 	set_physics_process(true)
 

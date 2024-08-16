@@ -140,7 +140,7 @@ func say(character: String, line: String) :
 	for c in escoria.object_manager.get_object(character).node.get_children():
 		if c is Marker2D:
 			# Identify any Postion2D nodes
-			if c.is_class("ESCDialogLocation"):
+			if c is ESCDialogLocation:
 				dialog_location_count += 1
 				dialog_location_node = c
 

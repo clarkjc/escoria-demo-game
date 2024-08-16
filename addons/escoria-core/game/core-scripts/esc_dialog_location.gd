@@ -7,7 +7,3 @@
 @icon("res://addons/escoria-core/design/esc_location.svg")
 class_name ESCDialogLocation
 extends ESCLocation
-
-# p_classname: String class to compare against
-func is_class(p_classname: String) -> bool:
-	return p_classname == "ESCDialogLocation"

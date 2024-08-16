@@ -4,11 +4,8 @@
 [ext_resource type="Script" path="res://addons/escoria-core/game/core-scripts/utils/esc_tween.gd" id="2_hk5j5"]
 
 [node name="dialog_box" type="Popup"]
-visible = true
+size = Vector2i(498, 166)
 script = ExtResource("1")
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Timer" type="Timer" parent="."]
 

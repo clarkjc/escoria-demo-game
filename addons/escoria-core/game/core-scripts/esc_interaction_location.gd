@@ -4,9 +4,6 @@
 # automatically use an `ESCLocation` that is a child of the destination node.
 # Commands like `turn_to`--which are not movement-based--will ignore child
 # `ESCLocation`s and refer to the parent node.
+@icon("res://addons/escoria-core/design/esc_location.svg")
+class_name ESCInteractionLocation
 extends ESCLocation
-class_name ESCInteractionLocation, "res://addons/escoria-core/design/esc_location.svg"
-
-# p_classname: String class to compare against
-func is_class(p_classname: String) -> bool:
-	return p_classname == "ESCInteractionLocation"
