@@ -2,6 +2,9 @@ class ESCLoggerBase:
 	# Perform emergency savegame
 	signal perform_emergency_savegame
 
+	# Sends the error or warning message in the signal
+	signal error_message_signal(message)
+
 	# Valid log levels
 	enum { LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG, LOG_TRACE }
 
@@ -20,12 +23,17 @@ class ESCLoggerBase:
 	# Configured log level
 	var _log_level: int
 
+	# If true, assert() functions will not be called, thus the program won't exit or error.
+	# Resets to false after an assert() call was ignored once.
+	var dont_assert: bool = false
+
 
 	# Constructor
 	func _init():
 		_log_level = _level_map[ESCProjectSettingsManager.get_setting(
 			ESCProjectSettingsManager.LOG_LEVEL
 		).to_upper()]
+
 
 
 	func formatted_message(context: String, msg: String, letter: String) -> String:
@@ -72,8 +80,11 @@ class ESCLoggerBase:
 		if ESCProjectSettingsManager.get_setting(
 			ESCProjectSettingsManager.TERMINATE_ON_WARNINGS
 		):
-			assert(false)
-			escoria.get_tree().quit()
+			if not dont_assert:
+				assert(false)
+				escoria.get_tree().quit()
+			dont_assert = false
+			emit_signal("error_message_signal", msg)
 
 
 	# Error log
@@ -88,9 +99,11 @@ class ESCLoggerBase:
 		if ESCProjectSettingsManager.get_setting(
 			ESCProjectSettingsManager.TERMINATE_ON_ERRORS
 		):
-			assert(false)
-			escoria.get_tree().quit()
-
+			if not dont_assert:
+				assert(false)
+				escoria.get_tree().quit()
+			dont_assert = false
+			emit_signal("error_message_signal", msg)
 
 	func get_log_level() -> int:
 		return _log_level
@@ -166,7 +179,7 @@ class ESCLoggerFile extends ESCLoggerBase:
 		if _log_level >= LOG_INFO:
 			_log_to_file_message(context, msg, "I")
 			super.info_message(context, msg)
-	
+
 	# Warning log
 	func warn(owner: Object, msg: String):
 		if _log_level >= LOG_WARNING:
@@ -258,4 +271,3 @@ class ESCLoggerVerbose extends ESCLoggerBase:
 	func debug(owner: Object, msg: String):
 		var context = owner.get_script().resource_path.get_file()
 		print(context, ": ", msg)
-
