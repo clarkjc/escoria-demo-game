@@ -1,6 +1,7 @@
-[gd_resource type="Theme" load_steps=2 format=2]
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://jqus6wg7xj41"]
 
-[ext_resource path="res://addons/escoria-ui-9verbs/fonts/caslonantique.tres" type="FontFile" id=1]
+[ext_resource type="FontFile" uid="uid://b3jourvqop8tl" path="res://addons/escoria-ui-9verbs/fonts/caslonantique.tres" id="1"]
 
 [resource]
-default_font = ExtResource( 1 )
+default_font = ExtResource("1")
+default_font_size = 21

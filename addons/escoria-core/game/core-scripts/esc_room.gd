@@ -187,4 +187,3 @@ func set_camera_limits(p_camera_limits: Array) -> void:
 func set_editor_debug_mode(p_editor_debug_mode: int) -> void:
 	editor_debug_mode = p_editor_debug_mode
 	queue_redraw()
-
