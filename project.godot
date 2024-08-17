@@ -108,16 +108,18 @@ switch_action_verb={
 ]
 }
 
-[locale]
+[internationalization]
 
-translations=PackedStringArray("res://game/translations/game.en.translation", "res://game/translations/game.fr.translation", "res://game/translations/main_menu.en.translation", "res://game/translations/main_menu.fr.translation", "res://game/translations/game.de.translation", "res://game/translations/main_menu.de.translation", "res://game/translations/game.es.translation", "res://game/translations/main_menu.es.translation")
-locale_filter=[0, []]
-translation_remaps={
+locale/translation_remaps={
 "res://game/speech/room01/ROOM1_look_wall_item_1.ogg": PackedStringArray("res://game/speech/room01/ROOM1_look_wall_item_1_de.ogg:de"),
 "res://game/speech/room01/ROOM1_look_wall_item_2.ogg": PackedStringArray("res://game/speech/room01/ROOM1_look_wall_item_2_de.ogg:de"),
 "res://game/speech/room01/ROOM1_look_wall_item_3.ogg": PackedStringArray("res://game/speech/room01/ROOM1_look_wall_item_3_de.ogg:de"),
 "res://game/speech/room01/ROOM1_look_wall_item_4.ogg": PackedStringArray("res://game/speech/room01/ROOM1_look_wall_item_4_de.ogg:de")
 }
+locale/translations=PackedStringArray("res://game/translations/game.en.translation", "res://game/translations/game.fr.translation", "res://game/translations/main_menu.en.translation", "res://game/translations/main_menu.fr.translation", "res://game/translations/game.de.translation", "res://game/translations/main_menu.de.translation", "res://game/translations/game.es.translation", "res://game/translations/main_menu.es.translation")
+locale/country_filter=[]
+locale/locale_filter_mode=0
+locale/language_filter=[]
 
 [network]
 

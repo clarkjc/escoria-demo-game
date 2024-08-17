@@ -39,8 +39,10 @@ class_name ESCSaveSettings
 	"escoria/sound/speech_volume")
 
 # True if game has to be fullscreen
-@export var fullscreen: bool = ProjectSettings.get_setting(
-	"display/window/size/mode") == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
+var display_mode: DisplayServer.WindowMode = \
+	ProjectSettings.get_setting("display/window/size/mode")
+@export var fullscreen: bool = \
+	DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN == display_mode
 
 # Dictionary containing all user-defined settings.
 @export var custom_settings: Dictionary
