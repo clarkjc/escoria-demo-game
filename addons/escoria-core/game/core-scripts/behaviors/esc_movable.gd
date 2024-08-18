@@ -96,9 +96,11 @@ func _calculate_movement(delta: float):
 	var pos: Vector2 = parent.get_position()
 	var old_pos: Vector2 = pos
 
-	# Check if navigation is finished
+	# Check if navigation is finished and target reached
 	if navigation_agent.is_navigation_finished():
-		walk_stop(navigation_agent.target_position)
+		if navigation_agent.is_target_reached():
+			pos = navigation_agent.target_position
+		walk_stop(pos)
 		return
 
 	# Get next waypoint from the navigation agent.
