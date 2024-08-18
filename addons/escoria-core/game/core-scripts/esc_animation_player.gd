@@ -174,7 +174,7 @@ func is_valid() -> bool:
 func _on_animation_finished(name: String):
 	if _is_animation_player \
 			and _animation_player.get_animation(name).loop_mode == Animation.LOOP_NONE: 
-		_animation_player.stop()
+		_animation_player.stop(true)
 	elif not _animated_sprite.frames.get_animation_loop(name):
 		_animated_sprite.stop()
 	emit_signal("animation_finished", name)
