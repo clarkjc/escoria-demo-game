@@ -122,7 +122,7 @@ func _check_multiple_enabled_navpolys(node: Node = null, is_exiting: bool = fals
 # - pos: Position to calculate lightmap for
 # **Returns** The color of the given point
 func get_light(pos: Vector2) -> Color:
-	if not lightmap or lightmap.get_data().is_empty():
+	if not lightmap or lightmap.get_image().is_empty():
 		return Color(1, 1, 1, 1)
 	var c = _get_color(_lightmap_data, pos)
 	return _get_color(_lightmap_data, pos) * lightmap_modulate
@@ -146,9 +146,9 @@ func get_scale_range(factor: float) -> Vector2:
 # - pos: The position to calculate for
 # **Returns** The scale factor for the given position
 func get_terrain(pos: Vector2) -> float:
-	if scales == null || scales.get_data().is_empty():
+	if scales == null || scales.get_image().is_empty():
 		return 1.0
-	return _get_color(scales.get_data(), pos).v
+	return _get_color(scales.get_image(), pos).v
 
 
 # Small helper to get the color of an image at a position
@@ -184,7 +184,7 @@ func _set_lightmap(p_lightmap: Texture2D):
 	if need_init:
 		if _lightmap_data:
 			false # _lightmap_data.unlock() # TODOConverter3To4, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
-		_lightmap_data = lightmap.get_data()
+		_lightmap_data = lightmap.get_image()
 		false # _lightmap_data.lock() # TODOConverter3To4, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 
 	_update_texture()
