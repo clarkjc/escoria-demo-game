@@ -32,7 +32,7 @@ const SUPPORTED_TRANSITIONS = ["LINEAR","SINE","QUINT","QUART","QUAD" ,"EXPO","E
 
 
 # Tween for blocking
-var _camera_tween: Tween
+var _camera_tween: ESCTween
 
 
 # Return the descriptor of the arguments of this command
@@ -52,7 +52,7 @@ func configure() -> ESCCommandArgumentDescriptor:
 # Run the command
 func run(command_params: Array) -> int:
 	(escoria.object_manager.get_object(escoria.object_manager.CAMERA).node as ESCCamera)\
-		super.shift(
+		.shift(
 			Vector2(
 				command_params[0],
 				command_params[1]

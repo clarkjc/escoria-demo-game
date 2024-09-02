@@ -49,7 +49,7 @@ func validate(arguments: Array):
 # Run the command
 func run(command_params: Array) -> int:
 	(escoria.object_manager.get_object(command_params[0]).node as ESCPlayer)\
-			super.animations = load(command_params[1])
+			.animations = load(command_params[1])
 	if not escoria.globals_manager.has(
 		escoria.room_manager.GLOBAL_ANIMATION_RESOURCES
 	):
@@ -74,4 +74,3 @@ func run(command_params: Array) -> int:
 func interrupt():
 	# Do nothing
 	pass
-

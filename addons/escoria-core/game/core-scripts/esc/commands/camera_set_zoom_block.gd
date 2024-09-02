@@ -23,7 +23,7 @@ extends ESCCameraBaseCommand
 class_name CameraSetZoomBlockCommand
 
 
-var _camera_tween: Tween
+var _camera_tween: ESCTween
 
 
 # Return the descriptor of the arguments of this command
@@ -51,7 +51,7 @@ func run(command_params: Array) -> int:
 	var camera: ESCCamera = escoria.object_manager.get_object(escoria.object_manager.CAMERA).node as ESCCamera
 
 	camera\
-		super.set_camera_zoom(
+		.set_camera_zoom(
 			command_params[0],
 			command_params[1]
 		)

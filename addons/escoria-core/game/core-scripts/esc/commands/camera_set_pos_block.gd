@@ -19,7 +19,7 @@ class_name CameraSetPosBlockCommand
 
 
 # Tween for blocking
-var _camera_tween: Tween
+var _camera_tween: ESCTween
 
 
 # Return the descriptor of the arguments of this command
@@ -51,7 +51,7 @@ func validate(arguments: Array):
 # Run the command
 func run(command_params: Array) -> int:
 	(escoria.object_manager.get_object(escoria.object_manager.CAMERA).node as ESCCamera)\
-			super.set_target(
+			.set_target(
 				Vector2(command_params[1], command_params[2]),
 				command_params[0]
 			)
